@@ -2,7 +2,7 @@
 // @id              google-play-store
 // @name            google-play-store
 // @namespace       http://tampermonkey.net/
-// @version         2019.6.18
+// @version         2019.7.2
 // @description     Google Play Store
 // @author          Rex Pan <napxer@gmail.com>
 // @match           https://play.google.com/store/*
@@ -21,14 +21,14 @@
     if (location.pathname.includes("/books/collection/")) {
         setInterval(() => {
             window.scrollTo(0, document.body.scrollHeight);
-            hideBooks();
+            hideCards();
         }, 2000);
     }
 
     if (location.pathname.includes("/apps/collection/")) {
         setInterval(() => {
             window.scrollTo(0, document.body.scrollHeight);
-            hideApps();
+            hideCards();
         }, 2000);
     }
 
@@ -37,7 +37,25 @@
         if (installedButton != null) window.close();
     }
 
-    function hideBooks(){
+    function hideCards(){
+        Array.from(document.querySelectorAll(`button[data-item-id]`))
+            .filter(b => b.innerText == "Free")
+            .map(b => b.closest(`c-wiz`))
+            .filter(Boolean)
+            .forEach(card => { card.hidden = true });
+
+        Array.from(document.querySelectorAll(`button[data-item-id]`))
+            .filter(b => !b.innerText.includes("Free"))
+            .map(b => b.closest(`c-wiz`))
+            .filter(Boolean)
+            .forEach(card => { card.hidden = true; card.style.opacity = 0.2 });
+
+        Array.from(document.querySelectorAll(`c-wiz`))
+            .filter(card => card.querySelector(`button`) == null)
+            .forEach(card => { card.hidden = true });
+    }
+
+    function hideBooks() {
         const bs = document.querySelectorAll(`.card.books[data-docid]`);
         for(let b of bs) {
            const fp = b.querySelector(`span.full-price`);
@@ -60,8 +78,6 @@
            console.log(fp);
            b.style.display = (fp == null || aq != null) ? "none" : "";
         }
-
-        window.scrollTo(0, document.body.scrollHeight);
     }
 
     function sleep(n) {
