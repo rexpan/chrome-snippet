@@ -2,11 +2,11 @@
 // @id              udemy
 // @name            udemy auto add free
 // @namespace       http://tampermonkey.net/
-// @version         2019.6.18
+// @version         2019.12.10
 // @description     auto open Udemy link
 // @author          Rex Pan <napxer@gmail.com>
 // @match           https://www.udemy.com/*
-// @grant           none
+// @grant           window.close
 // @updateURL       https://github.com/rexpan/chrome-snippet/raw/master/www.udemy.com.user.js
 // @downloadURL     https://github.com/rexpan/chrome-snippet/raw/master/www.udemy.com.user.js
 // @run-at          document-idle
@@ -24,11 +24,12 @@ const buyBtnSelector = `button[data-purpose="buy-this-course-button"]`;
 const a2cSelector = `button[data-purpose="add-to-cart"]`;
 const oldPriceSelector = `.buy-box [data-purpose="course-old-price-text"]`;
 
-debugger;
-
 const buyBtn = await querySelectorAsync(buyBtnSelector);
-const text = buyBtn.innerText.trim();
-if (text == "Go to Course") { window.close(); return; }
+const text = buyBtn.innerText.trim().toLowerCase();
+if (text == "go to course") {
+    window.close();
+    return;
+}
 
 if (document.querySelector(oldPriceSelector) == null) {
     window.close();
