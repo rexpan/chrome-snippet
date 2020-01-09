@@ -2,11 +2,11 @@
 // @id              open-techgearlab-new-article
 // @name            open-techgearlab-new-article
 // @namespace       http://tampermonkey.net/
-// @version         2019.6.18
+// @version         2020.01.09
 // @description     open-techgearlab-new-article
 // @author          Rex Pan <napxer@gmail.com>
 // @match           https://www.techgearlab.com/
-// @grant           none
+// @grant           window.close
 // @updateURL       https://github.com/rexpan/chrome-snippet/raw/master/open-techgearlab-new-article.user.js
 // @downloadURL     https://github.com/rexpan/chrome-snippet/raw/master/open-techgearlab-new-article.user.js
 // @run-at          document-idle
