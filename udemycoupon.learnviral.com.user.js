@@ -2,11 +2,11 @@
 // @id              udemycoupon.learnviral.com
 // @name            udemycoupon.learnviral.com auto open
 // @namespace       http://tampermonkey.net/
-// @version         2019.6.18
+// @version         2020.01.09
 // @description     auto open Udemy link
 // @author          Rex Pan <napxer@gmail.com>
 // @match           https://udemycoupon.learnviral.com/coupon/*
-// @grant           none
+// @grant           window.close
 // @updateURL       https://github.com/rexpan/chrome-snippet/raw/master/udemycoupon.learnviral.com.user.js
 // @downloadURL     https://github.com/rexpan/chrome-snippet/raw/master/udemycoupon.learnviral.com.user.js
 // @run-at          document-idle
