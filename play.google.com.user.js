@@ -2,7 +2,7 @@
 // @id              google-play-store
 // @name            google-play-store
 // @namespace       http://tampermonkey.net/
-// @version         2019.7.2
+// @version         2020.01.13
 // @description     Google Play Store
 // @author          Rex Pan <napxer@gmail.com>
 // @match           https://play.google.com/store/*
@@ -45,7 +45,7 @@
             .forEach(card => { card.hidden = true });
 
         Array.from(document.querySelectorAll(`button[data-item-id]`))
-            .filter(b => !b.innerText.includes("Free"))
+            .filter(b => !b.innerText.includes("Free") && !(/₫0$/.test(b.innerText)))
             .map(b => b.closest(`c-wiz`))
             .filter(Boolean)
             .forEach(card => { card.hidden = true; card.style.opacity = 0.2 });
