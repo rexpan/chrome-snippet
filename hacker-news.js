@@ -25,9 +25,11 @@ class Loader {
             .slice(0, n)
             .reverse()
             .map(this.getStory);
-        (await Promise.all(ps))
-            .filter(isInteresting)
-            .forEach(openStory);
+        const ys = (await Promise.all(ps)).filter(isInteresting);
+        for (const x of ys) {
+            openStory(x);
+            await sleep(1000);
+        }
     }
 }
 
@@ -42,11 +44,11 @@ function hasVisited(id) { return getVisitedNews().includes[id] }
 function getItemLink(id){
     // https://github.com/tastejs/hacker-news-pwas
     return (
-        // `https://news.ycombinator.com/item?id=${id}`
+        `https://news.ycombinator.com/item?id=${id}`
         // `https://react-hn.appspot.com/#story/${id}`
         // `https://next-news.now.sh/item?id=${id}`
         // `https://hn.kristoferbaxter.com/item/${id}`
-        `https://hackernewsmobile.com/#/comments/${id}`
+//         `https://hackernewsmobile.com/#/comments/${id}`
     );
 }
 function isInteresting(story) {
@@ -77,6 +79,8 @@ function fetchTopStories(id) {
         .then(res => res.json())
     );
 }
+
+function sleep(n) { return new Promise(resolve => setTimeout(resolve, n)) }
 })();
 
 // // https://github.com/muicss/loadjs 
