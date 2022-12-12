@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name            google-play-store
+// @id              google-play-store
 // @namespace       http://tampermonkey.net/
-// @version         2022.06.21
+// @version         2022.12.12
 // @description     Google Play Store
 // @author          Rex Pan <napxer@gmail.com>
 // @match           https://play.google.com/store/*
@@ -9,18 +10,39 @@
 // @updateURL       https://github.com/rexpan/chrome-snippet/raw/master/play.google.com.user.js
 // @downloadURL     https://github.com/rexpan/chrome-snippet/raw/master/play.google.com.user.js
 // @run-at          document-idle
+// @priority        9001
 // @homepageURL     https://github.com/rexpan/chrome-snippet/blob/master/play.google.com.user.js
 // @supportURL      https://github.com/rexpan/chrome-snippet/issues
 // @license         MIT
 // ==/UserScript==
 
 (async () => {'use strict';
-    function r() { hideCards(); setTimeout(r, 2000) } r();
+    setInterval(() => {
+        if (
+            location.pathname == "/store/books/collection/cluster"
+         || location.pathname == "/store/books"
+         || location.pathname.startsWith("/store/books/collection/")
+        ) {
+            Array.from(document.querySelectorAll(`[role="listitem"]`), x => x.hidden = (x.querySelector(`[aria-label$="now reduced to Free"]`) == null));
+            document.querySelector(`footer`).parentElement.hidden = true;
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    }, 2000);
+
+
+    if (location.pathname.includes("/apps/collection/")) {
+        setInterval(() => {
+            window.scrollTo(0, document.body.scrollHeight);
+            hideCards();
+        }, 2000);
+    }
+
+    if (location.pathname.includes("/apps/details")) {
+        const installedButton = Array.from(document.querySelectorAll(`button`)).find(button => button.innerText === "Installed");
+        if (installedButton != null) window.close();
+    }
 
     function hideCards(){
-        if (location.pathname == "/store/apps/details" && Array.from(document.querySelectorAll(`button span`)).some(s => s.textContent == 'Install on more devices')) { window.close(); return; }
-
-        if (!location.pathname.includes("/store/books/collection/") && location.pathname != "/store/books") return;
         Array.from(document.querySelectorAll(`button[data-item-id]`))
             .filter(b => b.innerText == "Free")
             .map(b => b.closest(`c-wiz`))
@@ -33,13 +55,9 @@
             .filter(Boolean)
             .forEach(card => { card.hidden = true; card.style.opacity = 0.2 });
 
-        Array.from(document.querySelectorAll(`div[role='listitem']`)).filter(d => d.querySelector(`span[aria-label*='now reduced to Free']`) == null).forEach(d => d.hidden = true);
-
-        if (false)
         Array.from(document.querySelectorAll(`c-wiz`))
             .filter(card => card.querySelector(`button`) == null)
             .forEach(card => { card.hidden = true });
-        window.scrollTo(0, document.body.scrollHeight);
     }
 
     function hideBooks() {
