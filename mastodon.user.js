@@ -4,8 +4,16 @@
 // @version         2022.12.19
 // @description     Google Play Store
 // @author          Rex Pan <napxer@gmail.com>
+// @match           https://mastodon.social/*
+// @match           https://mstdn.social/*
 // @match           https://indieweb.social/*
 // @match           https://mastodon.online/*
+// @match           https://mas.to/*
+// @match           https://hachyderm.io/*
+// @match           https://fedi.simonwillison.net/*
+// @match           https://m.webtoo.ls/*
+// @match           https://kinky.business/*
+// @match           https://data-folks.masto.host/*
 // @grant           none
 // @updateURL       https://github.com/rexpan/chrome-snippet/raw/master/mastodon.js
 // @downloadURL     https://github.com/rexpan/chrome-snippet/raw/master/mastodon.js
