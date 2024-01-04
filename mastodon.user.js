@@ -1,19 +1,15 @@
 // ==UserScript==
 // @name            mastodon
 // @namespace       http://tampermonkey.net/
-// @version         2022.12.19
+// @version         2024.01.04
 // @description     Google Play Store
 // @author          Rex Pan <napxer@gmail.com>
-// @match           https://mastodon.social/*
-// @match           https://mstdn.social/*
 // @match           https://indieweb.social/*
 // @match           https://mastodon.online/*
-// @match           https://mas.to/*
-// @match           https://hachyderm.io/*
 // @match           https://fedi.simonwillison.net/*
-// @match           https://m.webtoo.ls/*
-// @match           https://kinky.business/*
-// @match           https://data-folks.masto.host/*
+// @match           https://mas.to/*
+// @match           https://mastodon.social/*
+// @match           https://fosstodon.org/*
 // @grant           none
 // @updateURL       https://github.com/rexpan/chrome-snippet/raw/master/mastodon.js
 // @downloadURL     https://github.com/rexpan/chrome-snippet/raw/master/mastodon.js
@@ -31,14 +27,25 @@
  */
 (async () => {'use strict';
     const myMastodon = 'https://fosstodon.org'
+    const myElk = 'https://elk.zone/fosstodon.org'
     const parts = location.pathname.split('/');
+    if (location.origin === myMastodon) {
+        if (myElk) location.href = location.href.replace(myMastodon, myElk)
+        return
+    }
     if (parts.length === 2) {
         /* Profile */
-        const userName = parts[1];
-        location.href = `${myMastodon}/${userName}@${location.host}`;
-    } else {
-    /* Post */
+        const [,user] = parts
+        location.href = `${myMastodon}/${user}@${location.host}`;
+    } else if (parts.length === 3) {
+        /* Post */
         // https://indieweb.social/@addyosmani/109530799760434144 -> https://fosstodon.org/@addyosmani@indieweb.social/109530800084780894
+        location.href = `${myMastodon}/authorize_interaction?uri=${location.href}`;
+
+        const [,user,post] = parts
+        const userAtHost = user.slice(1).includes('@') ? user : `${user}@${location.host}`
+        //location.href = `${myMastodon}/${userAtHost}/${post}`;
+    } else {
         location.href = `${myMastodon}/authorize_interaction?uri=${location.href}`;
     }
 })();
