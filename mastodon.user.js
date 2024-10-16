@@ -10,6 +10,7 @@
 // @match           https://mas.to/*
 // @match           https://mastodon.social/*
 // @match           https://fosstodon.org/*
+// @match           https://wandering.shop/*
 // @grant           none
 // @updateURL       https://github.com/rexpan/chrome-snippet/raw/master/mastodon.js
 // @downloadURL     https://github.com/rexpan/chrome-snippet/raw/master/mastodon.js
