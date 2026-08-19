@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name            YouTubeShortRedirect
 // @namespace       http://tampermonkey.net/
-// @version         2026.08.18
-// @description     Redirect YouTube Short, and force 2x playback rate
+// @version         2026.08.19
+// @description     Redirect YouTube Short, and force 2x playback rate except on music
 // @author          Rex Pan <napxer@gmail.com>
 // @match           https://www.youtube.com/*
 // @grant           none
@@ -21,7 +21,8 @@
  * https://wiki.greasespot.net/@grant
  */
 (() => {'use strict';
-  const playbackRate = 2;
+  const playbackRate      = 2;
+  const musicPlaybackRate = 1;
 
   rememberPlaybackRate();
   redirect();
@@ -37,27 +38,32 @@
     if (match) location.replace('https://www.youtube.com/watch?v=' + match[1]);
   }
 
-  /**
-   * The player element is its own API surface: YouTube mixes the same methods the
-   * IFrame API documents (setPlaybackRate / getPlaybackRate / getAvailablePlaybackRates)
-   * into #movie_player, so the speed change goes through the player's own state and the
-   * settings menu shows it. Assigning video.playbackRate skips that and leaves the UI stale.
-   */
   function setPlaybackRate() {
     const player = document.getElementById('movie_player') || document.getElementById('shorts-player');
     if (!player || typeof player.setPlaybackRate !== 'function') return;
 
+    const rate  = isMusic(player) ? musicPlaybackRate : playbackRate;
     const rates = player.getAvailablePlaybackRates?.();
-    if (rates && !rates.includes(playbackRate)) return;
-    if (player.getPlaybackRate?.() === playbackRate) return;
+    if (rates && !rates.includes(rate)) return;
+    if (player.getPlaybackRate?.() === rate) return;
 
-    player.setPlaybackRate(playbackRate);
+    player.setPlaybackRate(rate);
   }
 
-  /**
-   * Same localStorage entry the settings menu writes when you pick a speed by hand, so a
-   * freshly created player starts at 2x on its own instead of being corrected afterwards.
-   */
+  function isMusic(player) {
+    const response = player.getPlayerResponse?.() || initialPlayerResponse(player);
+    if (!response) return false;
+    if (response.microformat?.playerMicroformatRenderer?.category === 'Music') return true;
+
+    return / - Topic$/.test(response.videoDetails?.author ?? '');
+  }
+
+  function initialPlayerResponse(player) {
+    const videoId = player.getVideoData?.()?.video_id;
+    const response = window.ytInitialPlayerResponse;
+    return videoId && response?.videoDetails?.videoId === videoId ? response : null;
+  }
+
   function rememberPlaybackRate() {
     const now = Date.now();
     try {
